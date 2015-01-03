@@ -1,0 +1,8 @@
+name = Tmgmt Cart Helper
+description = Helper and interface function for TMGMT Cart
+dependencies[] = tmgmt
+dependencies[] = contextual
+dependencies[] = translation
+package = tmgmt
+core = 7.x
+files[] = tests/tmgmt_contextual_links.test
