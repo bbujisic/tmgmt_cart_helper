@@ -38,11 +38,36 @@ function tmgmt_cart_helper_menu() {
     'context' => MENU_CONTEXT_INLINE,
   );
 
+  $items['admin/tmgmt/bean/%/addtocart'] = array(
+    'title' => 'Add to translation cart',
+    'access arguments' => array('translate content'),
+    'page callback' => 'tmgmt_cart_helper_bean_contextual',
+    'page arguments' => array(3),
+    'type' => MENU_LOCAL_TASK,
+    'context' => MENU_CONTEXT_INLINE,
+  );
+
 
   return $items;
 }
 
 function tmgmt_cart_helper_contextual_links_view_alter(&$element, &$items) {
+
+
+
+
+  if (isset($element['#element']['bean']['android-home---left-top-bean']['#entity']))
+
+    $element['#links']['block-addtocart'] = array(
+      'title' => t('Add to cart'),
+      'href' => 'admin/tmgmt/bean/' . $element['#element']['bean']['android-home---left-top-bean']['#entity']->bid . '/addtocart',
+      'query' => array(
+        drupal_get_destination(),
+      )
+    );
+
+
+    //kpr($element['#element']['bean']['android-home---left-top-bean']['#entity']);
   if (isset($element['#element']['#block'])) {
     if (!tmgmt_cart_helper_block_is_translatable($element['#element']['#block']) && isset($element['#links']['block-addtocart'])) {
       unset($element['#links']['block-addtocart']);
@@ -60,6 +85,14 @@ function tmgmt_cart_helper_node_contextual($node) {
   drupal_goto(drupal_get_destination());
 }
 
+/**
+ * Callback function for "add BEAN to translation cart" contextual link.
+ */
+function tmgmt_cart_helper_bean_contextual($bid) {
+  tmgmt_cart_helper_add('entity', 'bean', $bid);
+  drupal_goto(drupal_get_destination());
+}
+
 
 
 /**
@@ -71,6 +104,7 @@ function tmgmt_cart_helper_node_contextual($node) {
 function tmgmt_cart_helper_block_contextual($module, $delta) {
   if (module_exists('tmgmt_entity')) {
     $block = block_load($module, $delta);
+    //dsm($block);
     if (tmgmt_cart_helper_block_is_translatable($block)) {
       $bean = bean_load_delta($delta);
       tmgmt_cart_helper_add('entity', 'bean', $bean->bid);
@@ -78,6 +112,25 @@ function tmgmt_cart_helper_block_contextual($module, $delta) {
   }
 
   drupal_goto(drupal_get_destination());
+}
+
+/**
+ * Implements hook_block_view_alter().
+ */
+function tmgmt_cart_helper_block_view_alter(&$data, $block) {
+  //kpr($data);
+  // Contextual links can be added as a renderable element to the content of
+  // a render array. We check if the block has content, and if so add a
+  // contextual link to it.
+  if (isset($data['content']) && is_array($data['content'])) {
+    $contextual_links = array(
+      'contextual',
+      array($block->module),
+    );
+
+    $data['content']['#contextual_links']['contextual_example'] = $contextual_links;
+  }
+
 }
 
 
@@ -136,6 +189,7 @@ function  tmgmt_cart_helper_add($plugin, $item_type, $source_id, $title = false)
 
 
 function tmgmt_cart_helper_block_is_translatable($block) {
+  //dsm($block);
   if ($block->module == 'bean' && module_exists('tmgmt_entity') && array_key_exists('bean', tmgmt_source_translatable_item_types('entity'))) {
     return true;
   }
