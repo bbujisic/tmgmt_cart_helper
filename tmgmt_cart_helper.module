@@ -141,9 +141,8 @@ function tmgmt_cart_helper_add_nodes($nids) {
   foreach ($nids as $nid) {
     $node = node_load($nid);
     tmgmt_cart_helper_add_node($node);
-
-    drupal_goto('admin/tmgmt/cart');
   }
+  drupal_goto('admin/tmgmt/cart');
 }
 
 /**
