@@ -33,7 +33,10 @@ function tmgmt_cart_helper_menu() {
     'title' => 'Add to translation cart',
     'access arguments' => array('translate content'),
     'page callback' => 'tmgmt_cart_helper_block_contextual',
-    'page arguments' => array(4, 5),
+    'page arguments' => array(
+      4,
+      5
+    ),
     'type' => MENU_LOCAL_TASK,
     'context' => MENU_CONTEXT_INLINE,
   );
@@ -53,22 +56,20 @@ function tmgmt_cart_helper_menu() {
 
 function tmgmt_cart_helper_contextual_links_view_alter(&$element, &$items) {
 
-//dsm($element);
 
+  if (isset($element['#element']['bean'])) {
+    $bean = reset($element['#element']['bean']);
+    if (isset($bean['#entity']->bid)) {
+      $element['#links']['block-addtocart'] = array(
+        'title' => t('Add to cart'),
+        'href' => 'admin/tmgmt/bean/' . $bean['#entity']->bid . '/addtocart',
+        'query' => array(
+          drupal_get_destination(),
+        )
+      );
+    }
+  }
 
-
-  if (isset($element['#element']['bean']['android-home---left-top-bean']['#entity']))
-
-    $element['#links']['block-addtocart'] = array(
-      'title' => t('Add to cart'),
-      'href' => 'admin/tmgmt/bean/' . $element['#element']['bean']['android-home---left-top-bean']['#entity']->bid . '/addtocart',
-      'query' => array(
-        drupal_get_destination(),
-      )
-    );
-
-
-    //kpr($element['#element']['bean']['android-home---left-top-bean']['#entity']);
   if (isset($element['#element']['#block'])) {
     if (!tmgmt_cart_helper_block_is_translatable($element['#element']['#block']) && isset($element['#links']['block-addtocart'])) {
       unset($element['#links']['block-addtocart']);
@@ -93,7 +94,6 @@ function tmgmt_cart_helper_bean_contextual($bid) {
   tmgmt_cart_helper_add('entity', 'bean', $bid);
   drupal_goto(drupal_get_destination());
 }
-
 
 
 /**
