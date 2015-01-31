@@ -53,6 +53,7 @@ function tmgmt_cart_helper_menu() {
 
 function tmgmt_cart_helper_contextual_links_view_alter(&$element, &$items) {
 
+//dsm($element);
 
 
 
@@ -142,7 +143,6 @@ function tmgmt_cart_helper_add_nodes($nids) {
     $node = node_load($nid);
     tmgmt_cart_helper_add_node($node);
   }
-  drupal_goto('admin/tmgmt/cart');
 }
 
 /**
@@ -165,6 +165,12 @@ function tmgmt_cart_helper_add_node($node) {
 
   tmgmt_cart_helper_add($plugin, 'node', $node->nid, $node->title);
 
+}
+
+function tmgmt_cart_helper_add_beans($beans) {
+  foreach ($beans as $bean) {
+    tmgmt_cart_helper_add('entity', 'bean', $bean->bid, $bean->label);
+  }
 }
 
 /**
