@@ -173,6 +173,11 @@ function tmgmt_cart_helper_add_beans($beans) {
   }
 }
 
+function tmgmt_cart_helper_entity_info_alter(&$entity_info) {
+  $entity_info['bean']['entity keys']['label'] = "label";
+}
+
+
 /**
  * Low level function which handles adding to cart and success messages.
  */
