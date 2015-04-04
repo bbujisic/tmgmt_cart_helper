@@ -205,3 +205,12 @@ function tmgmt_cart_helper_block_is_translatable($block) {
   }
   return false;
 }
+
+function tmgmt_cart_helper_form_alter(&$form, &$form_state, $form_id) {
+
+  // Amend target language form element in translation cart.
+  if($form_id == "tmgmt_ui_cart_content") {
+    $form['target_language']['#size'] = 7;
+    unset($form['target_language']['#options']['en']);
+  }
+}
